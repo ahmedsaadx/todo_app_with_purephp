@@ -1,8 +1,7 @@
 <?php
 session_start();
+require_once('database/connector/handler.php');
 require_once('inc/header.php');
-require_once('db_connection_handler.php'); 
-
 // Define input sanitization function
 function input_sanitization($input) {
     return trim(htmlspecialchars($input));

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once('db_connection_handler.php');
+require_once('database/connector/handler.php');
 require_once('inc/header.php');
 $query = "SELECT * FROM tasks";
 $result = mysqli_query($conn, $query);
