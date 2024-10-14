@@ -43,9 +43,19 @@ $result = mysqli_query($conn, $query);
                                 Due Date: <?php echo htmlspecialchars($row["due_date"]); ?>
                             </small>
                         </p>
-                        <!-- Buttons -->
+                       
                         <div class="mt-auto d-flex justify-content-between">
+                            
                             <a href="update_task.php?id=<?php echo $row['id']; ?>" class="btn btn-primary btn-sm">Edit</a>
+                            <p class="mb-2">
+                            <?php if ($row["status"] == 'pending'): ?>
+                                <span class="badge bg-warning">Pending</span>
+                            <?php elseif ($row["status"] == 'in-progress'): ?>
+                                <span class="badge bg-info">In Progress</span>
+                            <?php elseif ($row["status"] == 'completed'): ?>
+                                <span class="badge bg-success">Completed</span>
+                            <?php endif; ?>
+                        </p>
                             <a href="delete_task.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this task?');">Delete</a>
                         </div>
                     </div>
