@@ -1,9 +1,9 @@
 <?php 
-require_once('../db_connection_handler.php');
+require_once('../database/connector/handler.php');
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('location: ../create_task.php');
+    header('location: ../handlers/create_task.php');
     exit();
 } else {
     $task_name = trim($_POST["task_title"]);
@@ -55,10 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
         mysqli_stmt_close($stmt);
 
-        header('location: ../create_task.php');
+        header('location: ../handlers/create_task.php');
         exit();
     } else {
-        header('location: ../create_task.php');
+        header('location: ../handlers/create_task.php');
         exit();
     }
 }

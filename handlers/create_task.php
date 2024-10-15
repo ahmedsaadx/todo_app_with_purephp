@@ -1,12 +1,8 @@
 <?php
 session_start();
-
-require_once('db_connection_handler.php');
-require_once('inc/header.php');
-
-
+require_once('../database/connector/handler.php');
+require_once('../inc/header.php');
 ?>
-
 <body>
     <div class="container">
       <h1 class="mt-5">Create a New Task</h1>
@@ -25,7 +21,7 @@ require_once('inc/header.php');
         </div>
       <?php endif; ?>
       
-      <form action="actions/task_validation.php" method="POST" class="mt-3">
+      <form action="../actions/task_validation.php" method="POST" class="mt-3">
         <div class="mb-3">
           <label for="taskTitle" class="form-label">Task Title</label>
           <input type="text" class="form-control" id="taskTitle" name="task_title">
