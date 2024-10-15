@@ -1,34 +1,46 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>todo app</title>
+
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  </head>
-  <body>
-    <header>
-      <!-- Navbar -->
-      <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">Task Manager</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <title>todo app</title> <!-- Add a title for the page -->
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="../pages/list_task.php">Tasks</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="../pages/create_task.php">Create Task</a>
-              </li>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto"> <!-- Left-aligned items -->
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="list_task.php">Tasks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="create_task.php">Create Task</a>
+                </li>
             </ul>
-          </div>
+            <ul class="navbar-nav"> <!-- Right-aligned items -->
+                <li class="nav-item">
+                    <a class="nav-link" href="login.php">Login</a> <!-- Link to Login page -->
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="signup.php">Signup</a> <!-- Link to Signup page -->
+                </li>
+            </ul>
         </div>
-      </nav>
-    </header>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-  </body>
+    </div>
+</nav>
+
+<!-- Your content here -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> <!-- Bootstrap JS -->
+</body>
 </html>
