@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once('database/connector/handler.php');
-require_once('inc/header.php');
+require_once('../database/connector/handler.php');
+require_once('../inc/header.php');
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $task_id = intval($_GET['id']); 
    
