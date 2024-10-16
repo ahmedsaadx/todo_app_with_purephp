@@ -9,13 +9,11 @@
     findUnusedCode="true"
 >
     <projectFiles>
-        <file name="delete_task.php" />
-        <file name="create_task.php" />
         <file name="index.php" />
-        <file name="db_connection_handler.php" />
-        <file name="list_task.php" />
-        <directory name="inc" />
-        <directory name="actions" />
+        <directory name="controllers" />
+        <directory name="assets" />
+        <directory name="views" />
+        <directory name="models" />
         <ignoreFiles>
             <directory name="vendor" />
         </ignoreFiles>
