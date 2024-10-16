@@ -1,25 +1,28 @@
 <?php
 session_start();
 require_once('models/connector/handler.php');
-$page = isset($_GET['page']) ? htmlspecialchars($_GET['page']) : '';
-
 include_once('assets/header.php');
+$page = isset($_GET['page']) ? htmlspecialchars($_GET['page']) : 'home'; // Default to 'home' or your default page
 
 try {
-    $view = match ($page) {
+
+    $valid_pages = [
+        'home' => 'views/home.php', 
         'create_task' => 'views/create_task.php',
         'list_task' => 'views/list_task.php',
         'delete_task' => 'views/delete_task.php',
         'login' => 'views/login.php',
         'signup' => 'views/signup.php',
-        'update_task' => 'views/update_task.php',
-        // 'task_controller' => 'controllers/task_controller.php',
-        // default => 'index.php', 
-    };
+        'update_task' => 'views/update_task.php'
+    ];
 
-    include $view;
+    if (array_key_exists($page, $valid_pages)) {
+        include $valid_pages[$page];
+    } else {
+        throw new Exception('Page not found');
+    }
 } catch (Throwable $e) {
-    // include 'index.php'; 
+    echo "<h1>Error</h1><p>{$e->getMessage()}</p>"; // Replace with a more user-friendly error page if necessary
 }
 
 

@@ -59,14 +59,9 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 
         // If no errors, proceed with the update
         if (empty($_SESSION['task_errors'])) {
-            // Prepare the update query
             $update_query = "UPDATE tasks SET name = :task_name, description = :task_description, due_date = :due_date, status = :status, updated_at = :updated_at WHERE id = :task_id";
             $stmt = $pdo->prepare($update_query);
-    
-            // Get current timestamp
             $updated_at = date('Y-m-d H:i:s'); // Current timestamp
-
-            // Bind the parameters
             $stmt->bindParam(':task_name', $task_name);
             $stmt->bindParam(':task_description', $task_description);
             $stmt->bindParam(':due_date', $due_date);
@@ -74,7 +69,6 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             $stmt->bindParam(':updated_at', $updated_at);
             $stmt->bindParam(':task_id', $task_id, PDO::PARAM_INT);
     
-            // Execute the statement
             if ($stmt->execute()) {
                 $_SESSION["update_task"] = "Task updated successfully.";
                 header("Location: ../index.php?page=list_task");

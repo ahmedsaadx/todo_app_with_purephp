@@ -1,10 +1,9 @@
 <?php
 session_start();
-require_once('../database/connector/handler.php');
-require_once('../inc/header.php');
+require_once('../models/connector/handler.php');
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    header('location: ../pages/signup.php ');
+    header('location: ../index.php?page=signup.php ');
     exit;
     }else{
     if (empty($_POST["username"])) {
@@ -30,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     } else {
         $password = test_input($_POST["password"]);
         if(strlen($_POST["password"]) < 8){
-            $_SESSION["errors_signup"]["password_limit_charaters"] = "Password must be  < 8 charater";   
+            $_SESSION["errors_signup"]["password_limit_charaters"] = "Password must be at least 8 characters";   
         }else{
         $hash_password=password_hash($password,PASSWORD_BCRYPT);
         }
@@ -46,22 +45,33 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
     
     if (empty($_SESSION["errors_signup"])) {
-        $_SESSION['signup_success']= 'sign up successfully';
-        $sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
-        $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "sss", $name, $email, $hash_password);
-        if (mysqli_stmt_execute($stmt)) {
-            header('location: ../pages/signup.php');
+        $check_user_exists_query = "SELECT email FROM users WHERE email = :email";
+        $stmt_check_exists = $pdo->prepare($check_user_exists_query);
+        $stmt_check_exists->bindParam(':email', $email);
+        $stmt_check_exists->execute();
+
+        if ($stmt_check_exists->rowCount() > 0) {
+            $_SESSION["errors_signup"]["email_exists"] = "Email is already registered. Please use a different email.";
+            header('location: ../index.php?page=signup');
             exit;
         } else {
-            echo "Error: " . mysqli_error($conn);
+            $insert_user_query = "INSERT INTO users (`name`, `email`, `password`) VALUES (:name, :email, :hash_password)";
+            $stmt = $pdo->prepare($insert_user_query);
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':hash_password', $hash_password);
+            if ($stmt->execute()) {
+                $_SESSION['signup_success'] = 'Sign up successful! you can now sign in . Please go to the <a href="../index.php?page=login">login page</a>. ';
+                header('location: ../index.php?page=signup');
+                exit;
+            } else {
+                $_SESSION["errors_signup"]["db_error"] = "Error signing up, please try again.";
+                header('location: ../index.php?page=signup');
+                exit;
+            }
         }
-
-        mysqli_stmt_close($stmt);
-        header('location: ../pages/signup.php');
-        exit;
-    }else{
-        header('location: ../pages/signup.php');
+    } else {
+        header('location: ../index.php?page=signup');
         exit;
     }
 }

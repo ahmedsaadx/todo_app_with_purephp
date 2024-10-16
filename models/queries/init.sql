@@ -46,7 +46,7 @@ CREATE TABLE `tasks` (
 CREATE TABLE `users` (
   `id` int NOT NULL,
   `name` varchar(80) NOT NULL,
-  `email` varchar(150) NOT NULL,
+  `email` varchar(150) UNIQUE NOT NULL,
   `password` varchar(250) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
