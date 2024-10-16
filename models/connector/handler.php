@@ -9,13 +9,18 @@ if (!file_exists($envPath)) {
     $dotenv->load();
     $db_host = $_ENV['DB_HOST'] ?? 'localhost';  
     $db_user = $_ENV['DB_USERNAME'] ?? 'root';
-    $db_pass = $_ENV['DB_PASSWORD'] ?? '';
+    $db_pass = $_ENV['DB_PASSWORD'] ?? '123456';
     $db_name = $_ENV['DB_NAME'] ?? 'todo';
+    $dsn = "mysql:host=$db_host;dbname=$db_name;charset=UTF8";
 
-    $conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
+    try {
+	$pdo = new PDO($dsn, $db_user, $db_pass);
 
-    if (!$conn) {
-        die("Connection failed: " . mysqli_connect_error());
+	if (!$pdo) {
+		echo "Can't Connect to the $db_name database !";
+	}   
+    } catch (PDOException $e) {
+	echo $e->getMessage();
     }
 
 }

@@ -1,23 +1,20 @@
 <?php
 session_start();
-require_once('../database/connector/handler.php');
-require_once('../inc/header.php');
-// Define input sanitization function
+require_once('../models/connector/handler.php');
+
 function input_sanitization($input) {
     return trim(htmlspecialchars($input));
 }
 
-// Check if the task ID is valid
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $task_id = intval($_GET['id']); 
 
-    // Fetch the existing task data to pre-fill the form
-    $select_query = "SELECT * FROM tasks WHERE id = ?";
-    $stmt = mysqli_prepare($conn, $select_query);
-    mysqli_stmt_bind_param($stmt, 'i', $task_id);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    $task = mysqli_fetch_assoc($result);
+    // Prepare a statement to select the task
+    $select_query = "SELECT * FROM tasks WHERE id = :task_id";
+    $stmt = $pdo->prepare($select_query);
+    $stmt->bindParam(':task_id', $task_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $task = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$task) {
         die("Task not found.");
@@ -26,32 +23,26 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     // Check if the form has been submitted
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Get form data and sanitize inputs
-        $task_name = $_POST['task_title'];
-        $task_description = $_POST['task_description'];
+        $task_name = input_sanitization($_POST['task_title']);
+        $task_description = input_sanitization($_POST['task_description']);
         $due_date = $_POST['due_date'];
         $status = $_POST['status'];
         
         // Initialize an error array
-        $_SESSION['errors'] = [];
+        $_SESSION['task_errors'] = [];
 
         // Validate task title
         if (empty($task_name)) {
             $_SESSION['task_errors']['task_name_required'] = "Task name is required.";
-        } else {
-            $task_name = input_sanitization($task_name);
-            if (strlen($task_name) > 50) {
-                $_SESSION['task_errors']['task_name_length'] = "Task name must be under 50 characters.";
-            }
+        } elseif (strlen($task_name) > 50) {
+            $_SESSION['task_errors']['task_name_length'] = "Task name must be under 50 characters.";
         }
 
         // Validate task description
         if (empty($task_description)) {
             $_SESSION['task_errors']['task_description_required'] = "Task description is required.";
-        } else {
-            $task_description = input_sanitization($task_description);
-            if (strlen($task_description) > 150) {
-                $_SESSION['task_errors']['task_description_length'] = "Task description must be under 150 characters.";
-            }
+        } elseif (strlen($task_description) > 150) {
+            $_SESSION['task_errors']['task_description_length'] = "Task description must be under 150 characters.";
         }
 
         // Validate due date: check if it's in the future
@@ -59,6 +50,8 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         if ($due_date <= $current_date) {
             $_SESSION['task_errors']['due_date_invalid'] = "Due date must be after the $current_date.";
         }
+        
+        // Validate status
         $valid_statuses = ['pending', 'in-progress', 'completed'];
         if (!in_array($status, $valid_statuses)) {
             $_SESSION['task_errors']['invalid_status'] = "Invalid task status.";
@@ -66,28 +59,33 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 
         // If no errors, proceed with the update
         if (empty($_SESSION['task_errors'])) {
-            // Update query with placeholders including the updated_at field
-            $update_query = "UPDATE tasks SET name = ?, description = ?, due_date = ?, status = ?, updated_at = ? WHERE id = ?";
-            $stmt = mysqli_prepare($conn, $update_query);
+            // Prepare the update query
+            $update_query = "UPDATE tasks SET name = :task_name, description = :task_description, due_date = :due_date, status = :status, updated_at = :updated_at WHERE id = :task_id";
+            $stmt = $pdo->prepare($update_query);
     
             // Get current timestamp
             $updated_at = date('Y-m-d H:i:s'); // Current timestamp
-    
-            // Bind the parameters (s = string, i = integer)
-            mysqli_stmt_bind_param($stmt, 'sssssi', $task_name, $task_description, $due_date, $status, $updated_at, $task_id);
+
+            // Bind the parameters
+            $stmt->bindParam(':task_name', $task_name);
+            $stmt->bindParam(':task_description', $task_description);
+            $stmt->bindParam(':due_date', $due_date);
+            $stmt->bindParam(':status', $status);
+            $stmt->bindParam(':updated_at', $updated_at);
+            $stmt->bindParam(':task_id', $task_id, PDO::PARAM_INT);
     
             // Execute the statement
-            if (mysqli_stmt_execute($stmt)) {
+            if ($stmt->execute()) {
                 $_SESSION["update_task"] = "Task updated successfully.";
-                header("Location: list_task.php");
+                header("Location: ../index.php?page=list_task");
                 exit();
             } else {
-                $_SESSION['errors']['db_error'] = "Error updating task: " . mysqli_error($conn);
+                $_SESSION['errors']['db_error'] = "Error updating task.";
             }
         }
 
         // If there are validation errors, redirect back to the form
-        if (!empty($_SESSION['errors'])) {
+        if (!empty($_SESSION['task_errors'])) {
             header("Location: update_task.php?id=$task_id");
             exit();
         }
@@ -140,12 +138,12 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                                 <input type="date" class="form-control" id="dueDate" name="due_date" value="<?php echo htmlspecialchars($task['due_date']); ?>" required>
                             </div>
                             <div class="mb-3">
-                            <label for="taskStatus" class="form-label">Task Status</label>
-                            <select class="form-control" id="taskStatus" name="status" required>
-                            <option value="pending" <?php echo ($task['status'] == 'pending') ? 'selected' : ''; ?>>Pending</option>
-                            <option value="in-progress" <?php echo ($task['status'] == 'in-progress') ? 'selected' : ''; ?>>In Progress</option>
-                            <option value="completed" <?php echo ($task['status'] == 'completed') ? 'selected' : ''; ?>>Completed</option>
-                            </select>
+                                <label for="taskStatus" class="form-label">Task Status</label>
+                                <select class="form-control" id="taskStatus" name="status" required>
+                                    <option value="pending" <?php echo ($task['status'] == 'pending') ? 'selected' : ''; ?>>Pending</option>
+                                    <option value="in-progress" <?php echo ($task['status'] == 'in-progress') ? 'selected' : ''; ?>>In Progress</option>
+                                    <option value="completed" <?php echo ($task['status'] == 'completed') ? 'selected' : ''; ?>>Completed</option>
+                                </select>
                             </div>
                             
                             <div class="d-grid gap-2">
@@ -164,7 +162,8 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 </html>
 
 <?php
+// Clear task errors after displaying the form
 if (isset($_SESSION['task_errors'])){
     unset($_SESSION['task_errors']);
 }
-
+?>

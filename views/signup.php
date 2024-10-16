@@ -1,9 +1,3 @@
-<?php 
-session_start();
-require_once('../database/connector/handler.php');
-require_once('../inc/header.php');
-
-?>
 <!doctype html>
 <html lang="en">
 <head>

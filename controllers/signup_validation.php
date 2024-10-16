@@ -51,7 +51,6 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
         $stmt = mysqli_prepare($conn, $sql);
         mysqli_stmt_bind_param($stmt, "sss", $name, $email, $hash_password);
         if (mysqli_stmt_execute($stmt)) {
-            echo "Signup successful!";
             header('location: ../pages/signup.php');
             exit;
         } else {

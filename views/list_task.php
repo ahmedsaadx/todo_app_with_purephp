@@ -1,9 +1,8 @@
 <?php
-session_start();
-require_once('../database/connector/handler.php');
-require_once('../inc/header.php');
 $query = "SELECT * FROM tasks";
-$result = mysqli_query($conn, $query);
+$stmt = $pdo->prepare($query);
+$stmt->execute();
+$tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <div class="container mt-4">
@@ -23,7 +22,7 @@ $result = mysqli_query($conn, $query);
     <?php endif?>
 
     <div class="row">
-        <?php $i = 1; while ($row = mysqli_fetch_array($result)) : ?>
+        <?php $i = 1; foreach($tasks as $row) : ?>
             <div class="col-md-4 mb-4"> <!-- 3 cards per row for medium screens -->
                 <div class="card h-100 shadow-sm border-0 rounded">
                     <div class="card-body d-flex flex-column">
@@ -46,7 +45,7 @@ $result = mysqli_query($conn, $query);
                        
                         <div class="mt-auto d-flex justify-content-between">
                             
-                            <a href="update_task.php?id=<?php echo $row['id']; ?>" class="btn btn-primary btn-sm">Edit</a>
+                            <a href="../controllers/update_task.php?id=<?php echo $row['id']; ?>" class="btn btn-primary btn-sm">Edit</a>
                             <p class="mb-2">
                             <?php if ($row["status"] == 'pending'): ?>
                                 <span class="badge bg-warning">Pending</span>
@@ -56,12 +55,12 @@ $result = mysqli_query($conn, $query);
                                 <span class="badge bg-success">Completed</span>
                             <?php endif; ?>
                         </p>
-                            <a href="delete_task.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this task?');">Delete</a>
+                            <a href="../controllers/delete_task.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this task?');">Delete</a>
                         </div>
                     </div>
                 </div>
             </div>
-        <?php endwhile; ?>
+        <?php endforeach; ?>
     </div>
 </div>
 
