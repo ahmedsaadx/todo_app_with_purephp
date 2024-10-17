@@ -1,18 +1,19 @@
 <?php
 session_start();
 require_once('../models/connector/handler.php');
-
+require_once('auth.php');
+route_protected();
 function input_sanitization($input) {
     return trim(htmlspecialchars($input));
 }
 
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $task_id = intval($_GET['id']); 
-
-    // Prepare a statement to select the task
-    $select_query = "SELECT * FROM tasks WHERE id = :task_id";
+    $user_id= $_SESSION['user_id'];
+    $select_query = "SELECT * FROM tasks WHERE id = :task_id AND user_id = :user_id";
     $stmt = $pdo->prepare($select_query);
     $stmt->bindParam(':task_id', $task_id, PDO::PARAM_INT);
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
     $task = $stmt->fetch(PDO::FETCH_ASSOC);
 

@@ -1,8 +1,12 @@
 <?php
-$query = "SELECT * FROM tasks";
+$query = "SELECT * FROM tasks WHERE user_id = :user_id";
 $stmt = $pdo->prepare($query);
+$user_id = $_SESSION['user_id'];
+$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
 $stmt->execute();
 $tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+route_protected();
+
 ?>
 
 <div class="container mt-4">

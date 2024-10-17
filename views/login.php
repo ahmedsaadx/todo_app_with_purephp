@@ -9,7 +9,7 @@
                     <h5 class="card-title text-center">Login</h5>
                             <?php if (isset($_SESSION['sign_in_error']) && !empty($_SESSION['sign_in_error'])): ?>
                                 <div class="alert alert-danger">
-                                    <?php echo htmlspecialchars($_SESSION['sign_in_error']) ;?>
+                                    <?php echo htmlspecialchars($_SESSION['sign_in_error']) ;  unset($_SESSION['sign_in_error']);?>
                                 </div>
                                 <?php endif; ?>
                             

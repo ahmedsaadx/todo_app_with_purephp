@@ -1,7 +1,8 @@
 <?php 
 session_start();
 require_once('../models/connector/handler.php');
-
+require_once('auth.php');
+route_protected();
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('location: index?page=create_task');
     exit();
@@ -10,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $task_description = trim($_POST["task_description"]);
     $task_date = $_POST["due_date"];
     $current_date = date('Y-m-d'); 
+    $user_id =  $_SESSION['user_id'];
     $_SESSION['errors'] = [];
     if (empty($task_name)) {
         $_SESSION['errors']['task_name_required'] = "Task name is required.";
@@ -34,11 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         $_SESSION['errors']['task_date_invalid'] = "Due date must be after $current_date.";
     }
     if (empty($_SESSION['errors'])) {
-        $add_task_query = "INSERT INTO tasks (`name`, `description`, `due_date`) VALUES (:task_name, :task_description, :task_date)";
+        $add_task_query = "INSERT INTO tasks (`name`, `description`, `due_date`,`user_id`) VALUES (:task_name, :task_description, :task_date,:user_id)";
         $stmt = $pdo-> prepare($add_task_query);
         $stmt -> bindParam(':task_name',$task_name); 
         $stmt -> bindParam(':task_description',$task_description); 
         $stmt -> bindParam(':task_date',$task_date); 
+        $stmt -> bindParam(':user_id',$user_id);
         if ($stmt->execute()) {
             $_SESSION['success'] = "Task added successfully!";
         } else {
