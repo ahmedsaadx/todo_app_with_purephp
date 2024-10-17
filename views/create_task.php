@@ -1,3 +1,6 @@
+<?php
+route_protected()
+?>
 <body>
     <div class="container">
       <h1 class="mt-5">Create a New Task</h1>

@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once('models/connector/handler.php');
+require_once('controllers/auth.php');
 include_once('assets/header.php');
 $page = isset($_GET['page']) ? htmlspecialchars($_GET['page']) : 'home'; // Default to 'home' or your default page
 
@@ -13,7 +14,8 @@ try {
         'delete_task' => 'views/delete_task.php',
         'login' => 'views/login.php',
         'signup' => 'views/signup.php',
-        'update_task' => 'views/update_task.php'
+        'update_task' => 'views/update_task.php',
+        'signout' => 'views/signout.php'
     ];
 
     if (array_key_exists($page, $valid_pages)) {
@@ -22,7 +24,7 @@ try {
         throw new Exception('Page not found');
     }
 } catch (Throwable $e) {
-    echo "<h1>Error</h1><p>{$e->getMessage()}</p>"; // Replace with a more user-friendly error page if necessary
+    echo "<h1>Error</h1><p>{$e->getMessage()}</p>"; 
 }
 
 
