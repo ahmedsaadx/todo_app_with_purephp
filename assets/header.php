@@ -15,25 +15,36 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto"> <!-- Left-aligned items -->
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="index?page=list_task">Tasks</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="index?page=create_task">Create Task</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav"> <!-- Right-aligned items -->
-                <li class="nav-item">
-                    <a class="nav-link" href="index?page=login">Login</a> <!-- Link to Login page -->
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="index?page=signup">Signup</a> <!-- Link to Signup page -->
-                </li>
-            </ul>
+        <?php if (isset($_SESSION['user_id'])): ?>
+    <!-- User is logged in, show task management links and signout -->
+         <ul class="navbar-nav me-auto"> 
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="index.php?page=home">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="index.php?page=list_task">Tasks</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="index.php?page=create_task">Create Task</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav"> 
+            <li class="nav-item">
+                <a class="nav-link" href="index.php?page=signout">Signout</a> 
+            </li>
+        </ul>
+        <?php else: ?>
+        <ul class="navbar-nav"> 
+            <li class="nav-item">
+                <a class="nav-link" href="index.php?page=login">Login</a> 
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="index.php?page=signup">Signup</a> 
+            </li>
+        </ul>
+
+<?php endif; ?>
+
         </div>
     </div>
 </nav>
