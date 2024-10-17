@@ -17,6 +17,12 @@ route_protected();
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     <?php endif?>
+    <?php if(isset( $_SESSION['errors']['no_task_found'])):?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?php echo $_SESSION['errors']['no_task_found']; ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif?>
     
     <?php if(isset($_SESSION['update_task'])):?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
