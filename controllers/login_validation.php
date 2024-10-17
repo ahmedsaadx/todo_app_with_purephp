@@ -25,7 +25,7 @@ if($_SERVER["REQUEST_METHOD"] !== "POST"){
             exit;
         }
     }else{
-        $_SESSION['sgin_in_error'] = "Email or password is incorrect";
+        $_SESSION['sign_in_error'] = "Email or password is incorrect";
         header('location: ../index.php?page=login');
         exit;
     }
