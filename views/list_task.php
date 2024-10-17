@@ -82,6 +82,10 @@ if (isset($_SESSION['success_delete_task'])){
 if (isset($_SESSION['update_task'])){
     unset($_SESSION['update_task']);
 }
+if (isset( $_SESSION['errors']['no_task_found'])){
+   
+    unset($_SESSION['errors']['no_task_found']);
+}
 ?>
 
 <!-- Include Bootstrap JS and Popper.js for functionality -->
